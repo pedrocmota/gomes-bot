@@ -1,0 +1,45 @@
+{
+  "name": "truefarmers",
+  "version": "1.0.0",
+  "description": "App do truefarmers",
+  "main": "src/index.tsx",
+  "author": "Pedro Mota",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/pedrocmota/truefarmers",
+    "type": "git"
+  },
+  "scripts": {
+    "start": "node _dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "migrate:run": "knex migrate:latest --knexfile ./src/knexfile.ts",
+    "migrate:back": "knex migrate:rollback --knexfile ./src/knexfile.ts"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.10",
+    "dedent": "^0.7.0",
+    "dotenv": "^10.0.0",
+    "envalid": "^7.2.1",
+    "google-spreadsheet": "^3.1.15",
+    "imap-simple": "^5.1.0",
+    "knex": "^0.95.11",
+    "mailparser": "^3.4.0",
+    "mysql": "^2.18.1",
+    "node-telegram-bot-api": "^0.54.0"
+  },
+  "devDependencies": {
+    "@types/dedent": "^0.7.0",
+    "@types/google-spreadsheet": "^3.1.5",
+    "@types/imap-simple": "^4.2.5",
+    "@types/mailparser": "^3.0.3",
+    "@types/node": "^16.11.2",
+    "@types/node-telegram-bot-api": "^0.53.1",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^4.31.1",
+    "eslint": "^8.0.1",
+    "ts-node": "^10.4.0",
+    "typescript": "4.4.4"
+  }
+}
