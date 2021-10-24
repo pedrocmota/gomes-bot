@@ -3,7 +3,7 @@ import path from 'path'
 import dotenv from 'dotenv'
 
 const knexConfig = () => {
-  dotenv.config({path: path.resolve(__dirname, '../.env')})
+  dotenv.config({path: path.resolve(process.cwd(), '.env')})
   const config: Knex.Config = {
     client: 'mysql',
     connection: {

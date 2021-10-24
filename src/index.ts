@@ -9,6 +9,10 @@ export const env = loadEnv()
 export const knex = loadDB()
 export const bot = loadBot()
 
+console.log(
+  chalk.green(`►►► Iniciando o Truefarmers bot v${process.env.npm_package_version} ◄◄◄`)
+)
+
 testConnection()
 
 imapG2G(async (from, subject, html) => {

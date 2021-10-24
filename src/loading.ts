@@ -9,7 +9,7 @@ import TelegramBot from 'node-telegram-bot-api'
 import {env, knex as connection} from './index'
 
 export const loadEnv = () => {
-  dotenv.config({path: path.resolve(__dirname, '../.env')})
+  dotenv.config({path: path.resolve(process.cwd(), '.env')})
   return cleanEnv(process.env, {
     EMAIL_HOST: str(),
     EMAIL_PORT: num(),
