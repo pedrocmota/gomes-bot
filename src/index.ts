@@ -12,7 +12,7 @@ export const bot = loadBot()
 testConnection()
 
 imapG2G(async (from, subject, html) => {
-  if (env.EMAILS_ACCEPTED.includes(from) && subject.startsWith('[G2G]')) {
+  if (env.EMAILS_ACCEPTED.includes(from) && subject.includes('New Sell Order')) {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processG2G(html)
 
@@ -28,9 +28,5 @@ imapG2G(async (from, subject, html) => {
       salvadorenho: salvadorenho?.salvadorenho || 'Desconhecido',
       salvadorenhoID: salvadorenho?.salvadorenhoUsername || 'Desconhecido'
     })
-  } else {
-    console.log(
-      chalk.yellowBright(`E-mail de fonte desconhecida: ${from}`)
-    )
   }
 })
