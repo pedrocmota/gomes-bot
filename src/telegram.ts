@@ -17,9 +17,9 @@ export const sendG2GSold = (data: IData) => {
 
   Order ID: ${data.orderID}
   Produto: ${data.product}
-  Preço: ${data.price}
+  Valor: US$ ${data.price}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Salvadorenho: ${data.salvadorenho} (@${data.salvadorenhoID})
+  Salvadorenho: ${data.salvadorenho} @${data.salvadorenhoID}
   `))
 }
