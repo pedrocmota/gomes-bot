@@ -1,19 +1,25 @@
 import chalk from 'chalk'
-import {loadEnv, loadDB, testConnection, loadBot} from './loading'
+import {loadEnv, loadDB, testConnection, loadVersion, loadBot, loadSMTP} from './loading'
 import {imapG2G} from './imap'
 import {processG2G} from './processData'
 import {getSalvadorenhosList} from './query'
-import {sendG2GSold} from './telegram'
+import {sendG2GSold, TelegramStatus, TelegramTest} from './telegram'
 
 export const env = loadEnv()
+export const version = loadVersion()
 export const knex = loadDB()
 export const bot = loadBot()
+export const smtp = loadSMTP()
 
 console.log(
-  chalk.green(`►►► Iniciando o Truefarmers bot v${process.env.npm_package_version} ◄◄◄`)
+  chalk.green(`►►► Iniciando o Truefarmers bot v${version} ◄◄◄`)
 )
 
 testConnection()
+TelegramStatus()
+TelegramTest()
+
+bot.launch()
 
 imapG2G(async (from, subject, html) => {
   if (env.EMAILS_ACCEPTED.includes(from) && subject.includes('New Sell Order')) {

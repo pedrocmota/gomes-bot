@@ -1,11 +1,13 @@
 import path from 'path'
+import fs from 'fs'
 import dotenv from 'dotenv'
 import {cleanEnv, str, num} from 'envalid'
 import chalk from 'chalk'
 import dedent from 'dedent'
 import knex from 'knex'
 import knexfile from './knexfile'
-import TelegramBot from 'node-telegram-bot-api'
+import {Telegraf} from 'telegraf'
+import nodemailer from 'nodemailer'
 import {env, knex as connection} from './index'
 
 export const loadEnv = () => {
@@ -28,13 +30,28 @@ export const loadEnv = () => {
   })
 }
 
+export const loadVersion = () => {
+  const obj = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8'))
+  return obj.version || 'DESCONHECIDO'
+}
+
 export const loadDB = () => {
   return knex(knexfile)
 }
 
 export const loadBot = () => {
-  return new TelegramBot(env.TELEGRAM_TOKEN, {
-    polling: true
+  return new Telegraf(env.TELEGRAM_TOKEN)
+}
+
+export const loadSMTP = () => {
+  return nodemailer.createTransport({
+    host: env.EMAIL_HOST,
+    port: 465,
+    secure: true,
+    auth: {
+      user: env.EMAIL_USER,
+      pass: env.EMAIL_PASSWORD
+    }
   })
 }
 
