@@ -17,7 +17,9 @@ export const loadEnv = () => {
     EMAIL_PORT: num(),
     EMAIL_USER: str(),
     EMAIL_PASSWORD: str(),
-    EMAILS_ACCEPTED: str(),
+
+    G2G_HOST: str(),
+    PA_HOST: str(),
 
     DB_IP: str(),
     DB_PORT: str(),
@@ -26,6 +28,7 @@ export const loadEnv = () => {
     DB_DATABASE: str(),
 
     TELEGRAM_TOKEN: str(),
+
     TELEGRAM_CHAT_ID: str()
   })
 }

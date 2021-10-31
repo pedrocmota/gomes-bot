@@ -5,7 +5,7 @@ import {env} from './index'
 
 type onEmailType = (from: string, subject: string, html: string) => void
 
-export const imapG2G = (onEmail: onEmailType) => {
+export const imap = (onEmail: onEmailType) => {
   const imapConfig = {
     imap: {
       host: env.EMAIL_HOST,
@@ -30,6 +30,7 @@ export const imapG2G = (onEmail: onEmailType) => {
         }
 
         connection.search(searchCriteria, fetchOptions).then((messages) => {
+
           messages.forEach((message) => {
             try {
               const id = message.attributes.uid
@@ -51,7 +52,7 @@ export const imapG2G = (onEmail: onEmailType) => {
       })
 
       console.log(
-        chalk.green(`IMAP G2G.com conectado com sucesso! E-mail: ${env.EMAIL_USER}`)
+        chalk.green(`IMAP conectado com sucesso! E-mail: ${env.EMAIL_USER}`)
       )
 
       return connection.openBox('INBOX')
