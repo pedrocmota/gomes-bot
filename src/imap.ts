@@ -1,7 +1,8 @@
 import imaps from 'imap-simple'
 import {simpleParser} from 'mailparser'
 import chalk from 'chalk'
-import {env} from './index'
+import dedent from 'dedent'
+import {env, bot} from './index'
 
 type onEmailType = (from: string, subject: string, html: string) => void
 
@@ -43,6 +44,10 @@ export const imap = (onEmail: onEmailType) => {
                 onEmail(from, subject, html)
               })
             } catch (error) {
+              bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+                Erro ao processar o IMAP. Reinicie o BOT
+                ${error}
+              `))
               console.log(
                 chalk.red('Erro ao processar o e-mail')
               )
@@ -58,9 +63,10 @@ export const imap = (onEmail: onEmailType) => {
       return connection.openBox('INBOX')
     })
   } catch (error) {
-    console.log(
-      chalk.red('Erro ao conectar ao IMAP')
-    )
+    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+      Erro de conexão no IMAP. Reinicie o BOT
+      ${error}
+    `))
     console.error(error)
   }
 }
