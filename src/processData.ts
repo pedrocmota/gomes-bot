@@ -52,17 +52,14 @@ export const processPA = (html: string) => {
   const $ = cheerio.load(html)
   const processedData = {
     product: 'Desconhecido',
-    game: 'Desconhecido',
-    type: 'Desconhecido'
+    game: 'Desconhecido'
   }
   try {
     $('br').each((i, element) => {
       const cheerioElement = $(element)
       if (i === 3) {
         var itemRaw = String(cheerioElement[0].prev['data'] as string).substring(12)
-        var type = String(cheerioElement[0].next['data'] as string).substring(18)
         processedData.product = itemRaw
-        processedData.type = type
         if (itemRaw.startsWith('New World')) {
           processedData.game = 'New World'
         }
@@ -75,7 +72,6 @@ export const processPA = (html: string) => {
     console.error(error)
     processedData.product = 'ERRO INTERNO'
     processedData.game = 'ERRO INTERNO'
-    processedData.type = 'ERRO INTERNO'
   }
   return processedData
 }

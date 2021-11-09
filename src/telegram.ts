@@ -24,7 +24,6 @@ interface IPA {
   orderID: string,
   product: string,
   game: string,
-  type: string,
   salvadorenho: string,
   salvadorenhoID: string
 }
@@ -49,7 +48,6 @@ export const sendPASold = (data: IPA) => {
   Order ID: ${data.orderID}
   Produto: ${data.product}
   Jogo: ${data.game}
-  Tipo: ${data.type}
   Salvadorenho: ${data.salvadorenho} ${data.salvadorenhoID}
   `))
 }
@@ -57,7 +55,6 @@ export const sendPASold = (data: IPA) => {
 export const runCommands = () => {
 
   bot.command('help', async (ctx) => {
-    console.log(ctx.message.from.username)
     ctx.reply(dedent(`
     /version - Mostra a versão atual
     /product - Gerenciador de produto. Consule /product help

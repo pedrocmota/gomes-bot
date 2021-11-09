@@ -23,7 +23,7 @@ runCommands()
 bot.launch()
 
 imap(async (from, subject, html) => {
-  if ((env.G2G_HOST === from || env.EMAIL_USER === from) && subject.includes('New Sell Order')) {
+  if (subject.includes('New Sell Order')) {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processG2G(html)
 
@@ -41,7 +41,7 @@ imap(async (from, subject, html) => {
     })
   }
 
-  if ((env.PA_HOST === from || env.EMAIL_USER === from) && subject.includes('You Have a New Order')) {
+  if (subject.includes('You Have a New Order')) {
     const orderID = subject.substring(32)
     const processedData = processPA(html)
 
@@ -52,7 +52,6 @@ imap(async (from, subject, html) => {
       orderID: orderID,
       product: processedData.product,
       game: processedData.game,
-      type: processedData.type,
       salvadorenho: salvadorenho?.user || 'Desconhecido',
       salvadorenhoID: salvadorenho?.username || '@Desconhecido'
     })
