@@ -57,10 +57,12 @@ export const imap = (onEmail: onEmailType) => {
       })
 
       console.log(
-        chalk.green(`IMAP conectado com sucesso! E-mail: ${env.EMAIL_USER}`)
+        chalk.green(`Conexão IMAP feita: ${env.EMAIL_USER}`)
       )
 
       return connection.openBox('INBOX')
+    }).catch(() => {
+      imap(onEmail)
     })
   } catch (error) {
     bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`

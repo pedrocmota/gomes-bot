@@ -57,6 +57,7 @@ export const runCommands = () => {
   bot.command('help', async (ctx) => {
     ctx.reply(dedent(`
     /version - Mostra a versão atual
+    /username - Mostra o seu username
     /product - Gerenciador de produto. Consule /product help
     `))
   })
@@ -88,7 +89,7 @@ export const runCommands = () => {
         ${el.product}
         ${el.user} ${el.username}
 
-        ######################################
+        #############################
         `)
       })
       return ctx.reply(text)

@@ -22,8 +22,11 @@ export const processG2G = (html: string) => {
           processedData.game = 'Aion Classic'
         }
         if (itemRaw.startsWith('FRESH LEVEL')) {
-          processedData.game = 'WOW CLASSIC'
+          processedData.game = 'World of Warcraft Classic'
           processedData.type = 'Venda de conta'
+        }
+        if (itemRaw.startsWith('World of Warcraft')) {
+          processedData.game = 'World of Warcraft'
         }
 
         if (itemRaw.endsWith('(K Coins)')) {
@@ -31,6 +34,9 @@ export const processG2G = (html: string) => {
         }
         if (itemRaw.endsWith('(Mil Kinah)')) {
           processedData.type = 'Venda de Kinah'
+        }
+        if (itemRaw.endsWith('(Gold)')) {
+          processedData.type = 'Venda de gold'
         }
       }
       if (i === 15) {
