@@ -1,6 +1,6 @@
 {
   "name": "truefarmers",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "App do truefarmers",
   "main": "src/index.ts",
   "author": "Pedro Mota",

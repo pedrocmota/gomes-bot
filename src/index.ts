@@ -36,8 +36,8 @@ imap(async (from, subject, html) => {
       price: processedData.price,
       game: processedData.game,
       type: processedData.type,
-      salvadorenho: salvadorenho?.user || 'Desconhecido',
-      salvadorenhoID: salvadorenho?.username || '@Desconhecido'
+      user: salvadorenho?.user || 'Desconhecido',
+      userName: salvadorenho?.username || '@Desconhecido'
     })
   }
 
@@ -52,8 +52,8 @@ imap(async (from, subject, html) => {
       orderID: orderID,
       product: processedData.product,
       game: processedData.game,
-      salvadorenho: salvadorenho?.user || 'Desconhecido',
-      salvadorenhoID: salvadorenho?.username || '@Desconhecido'
+      user: salvadorenho?.user || 'Desconhecido',
+      userName: salvadorenho?.username || '@Desconhecido'
     })
   }
 })
