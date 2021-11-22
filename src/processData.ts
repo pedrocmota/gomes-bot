@@ -28,6 +28,9 @@ export const processG2G = (html: string) => {
         if (itemRaw.startsWith('World of Warcraft')) {
           processedData.game = 'World of Warcraft'
         }
+        if (itemRaw.startsWith('WOW')) {
+          processedData.game = 'World of Warcraft'
+        }
 
         if (itemRaw.endsWith('(K Coins)')) {
           processedData.type = 'Venda de gold'
