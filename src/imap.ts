@@ -21,6 +21,10 @@ export const imap = (onEmail: onEmailType) => {
     }
   }
 
+  const run = () => {
+
+  }
+
   try {
     imaps.connect(imapConfig).then((connection) => {
       connection.on('mail', () => {
@@ -57,12 +61,18 @@ export const imap = (onEmail: onEmailType) => {
       })
 
       console.log(
-        chalk.green(`Conexão IMAP feita: ${env.EMAIL_USER}`)
+        chalk.green('Conexão IMAP aberta')
       )
 
+      setTimeout(() => {
+        console.log(
+          chalk.green('Conexão IMAP fechada. Abrindo outra...')
+        )
+        connection.end()
+        imap(onEmail)
+      }, env.IMAP_TIMEOUT)
+
       return connection.openBox('INBOX')
-    }).catch(() => {
-      imap(onEmail)
     })
   } catch (error) {
     bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`

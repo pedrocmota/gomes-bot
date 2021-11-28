@@ -21,6 +21,8 @@ export const loadEnv = () => {
     G2G_HOST: str(),
     PA_HOST: str(),
 
+    IMAP_TIMEOUT: num(),
+
     DB_IP: str(),
     DB_PORT: str(),
     DB_USER: str(),
