@@ -184,6 +184,22 @@ export const runCommands = () => {
     }
   })
 
+  bot.command('/say', async (ctx) => {
+    if (ctx.message.chat.type === 'private') {
+      const args = ctx.state.command.args
+      if (!ctx.message.from.username) {
+        return 'Você não tem username'
+      }
+      if (typeof args[0] === 'string') {
+        bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+        MENSAGEM DO MANO @${ctx.message.from.username}
+
+        ${args[0]}
+        `))
+      }
+    }
+  })
+
   bot.on('text', (ctx) => {
     if (ctx.message.chat.type === 'private') {
       return ctx.reply('Comando desconhecido')
