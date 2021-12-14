@@ -126,7 +126,7 @@ export const runCommands = () => {
         if ((await getProduct(args[1])) === undefined) {
           return ctx.reply('ID inexistente')
         }
-        if (!args[3].startsWith('@')) {
+        if (!args[4].startsWith('@')) {
           return ctx.reply('É necessário digitar um username válido')
         }
         return updateProduct(args[1], args[2], args[3], args[4]).then(() => {
