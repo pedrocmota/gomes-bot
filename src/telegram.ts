@@ -29,27 +29,79 @@ interface IPA {
 }
 
 export const sendG2GSold = (data: IG2G) => {
-  bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-  VENDA NO G2G.COM
+  if (data.user !== 'Desconhecido') {
+    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+    <b>VENDA NO G2G.COM</b>
+    PARA: <b>${data.userName}</b>
+ 
+    Order ID: ${data.orderID}
+    Produto: ${data.product}
+    Valor: US$ ${data.price}
+    Jogo: ${data.game}
+    Tipo: ${data.type}
 
-  Order ID: ${data.orderID}
-  Produto: ${data.product}
-  Valor: US$ ${data.price}
-  Jogo: ${data.game}
-  Tipo: ${data.type}
-  Salvadorenho: ${data.user} ${data.userName}
-  `))
+    ${data.game === 'World of Warcraft' ? `
+    Essa é uma venda do WOW, não se esqueça de mandar a mensagem abaixo no grupo do <a href="https://chat.whatsapp.com/GtVIzbU3tMyFs8898XInQN">WhatsApp</a>
+
+    ID: ${data.orderID}
+    DATA: ${new Date().toLocaleDateString('pt-BR')}
+    PESSOA: COLOQUE SEU NOME AQUI
+    `: ''}
+    `), {
+      disable_web_page_preview: true,
+      parse_mode: 'HTML'
+    })
+  } else {
+    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+    <b>VENDA NO G2G.COM</b>
+    DONO DESCONHECIDO
+ 
+    Order ID: ${data.orderID}
+    Produto: ${data.product}
+    Valor: US$ ${data.price}
+    Jogo: ${data.game}
+    Tipo: ${data.type}
+
+    ${data.game === 'World of Warcraft' ? `
+    Essa é uma venda do WOW, não se esqueça de mandar a mensagem abaixo no grupo do <a href="https://chat.whatsapp.com/GtVIzbU3tMyFs8898XInQN">WhatsApp</a>
+
+    ID: ${data.orderID}
+    DATA: ${new Date().toLocaleDateString('pt-BR')}
+    PESSOA: COLOQUE SEU NOME AQUI
+    `: ''}
+    `), {
+      disable_web_page_preview: true,
+      parse_mode: 'HTML'
+    })
+  }
 }
 
 export const sendPASold = (data: IPA) => {
-  bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-  VENDA NO PLAYERAUCTIONS.com
+  if (data.user !== 'Desconhecido') {
+    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+    <b>VENDA NO PLAYERAUCTIONS.COM</b>
+    PARA: <b>${data.userName}</b>
 
-  Order ID: ${data.orderID}
-  Produto: ${data.product}
-  Jogo: ${data.game}
-  Salvadorenho: ${data.user} ${data.userName}
-  `))
+    Order ID: ${data.orderID}
+    Produto: ${data.product}
+    Jogo: ${data.game}
+    `), {
+      disable_web_page_preview: true,
+      parse_mode: 'HTML'
+    })
+  } else {
+    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
+    <b>VENDA NO PLAYERAUCTIONS.COM</b>
+    DONO DESCONHECIDO
+
+    Order ID: ${data.orderID}
+    Produto: ${data.product}
+    Jogo: ${data.game}
+    `), {
+      disable_web_page_preview: true,
+      parse_mode: 'HTML'
+    })
+  }
 }
 
 export const runCommands = () => {
