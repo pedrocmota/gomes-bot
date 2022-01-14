@@ -68,7 +68,7 @@ export const processPA = (html: string) => {
       const cheerioElement = $(element)
       if (i === 3) {
         var itemRaw = String(cheerioElement[0].prev['data'] as string).substring(12)
-        processedData.product = itemRaw
+        processedData.product = itemRaw.trim()
         if (itemRaw.startsWith('New World')) {
           processedData.game = 'New World'
         }
@@ -82,5 +82,50 @@ export const processPA = (html: string) => {
     processedData.product = 'ERRO INTERNO'
     processedData.game = 'ERRO INTERNO'
   }
+  return processedData
+}
+
+export const processP2PAH = (html: string) => {
+  const processedData = {
+    product: 'Desconhecido',
+    price: '0',
+    game: 'Desconhecido',
+    type: 'Desconhecido'
+  }
+  const exploded = html.split('\n')
+  const itemRaw = exploded[15].trim()
+  const rawValue = exploded[17]
+  const value = rawValue.substring(rawValue.indexOf('$') + 1)
+
+  processedData.product = itemRaw
+  processedData.price = value
+
+  if (itemRaw.startsWith('New World')) {
+    processedData.game = 'New World'
+  }
+  if (itemRaw.startsWith('Aion Classic')) {
+    processedData.game = 'Aion Classic'
+  }
+  if (itemRaw.startsWith('FRESH LEVEL')) {
+    processedData.game = 'World of Warcraft Classic'
+    processedData.type = 'Venda de conta'
+  }
+  if (itemRaw.startsWith('World of Warcraft')) {
+    processedData.game = 'World of Warcraft'
+  }
+  if (itemRaw.startsWith('WOW')) {
+    processedData.game = 'World of Warcraft'
+  }
+
+  if (itemRaw.endsWith('(K Coins)')) {
+    processedData.type = 'Venda de gold'
+  }
+  if (itemRaw.endsWith('(Mil Kinah)')) {
+    processedData.type = 'Venda de Kinah'
+  }
+  if (itemRaw.endsWith('(Gold)')) {
+    processedData.type = 'Venda de gold'
+  }
+
   return processedData
 }

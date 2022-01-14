@@ -1,28 +1,23 @@
 import imaps from 'imap-simple'
 import {simpleParser} from 'mailparser'
 import chalk from 'chalk'
-import dedent from 'dedent'
-import {env, bot} from './index'
+import {env, isDev} from './index'
 
 type onEmailType = (from: string, subject: string, html: string) => void
 
 export const imap = (onEmail: onEmailType) => {
   const imapConfig = {
     imap: {
-      host: env.EMAIL_HOST,
-      port: env.EMAIL_PORT,
-      user: env.EMAIL_USER,
-      password: env.EMAIL_PASSWORD,
+      host: !isDev ? env.EMAIL_HOST : env.TEST_EMAIL_HOST,
+      port: !isDev ? env.EMAIL_PORT : env.TEST_EMAIL_PORT,
+      user: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+      password: !isDev ? env.EMAIL_PASSWORD : env.TEST_EMAIL_PASSWORD,
       tls: true,
       authTimeout: 5000,
       tlsOptions: {
         rejectUnauthorized: false
       }
     }
-  }
-
-  const run = () => {
-
   }
 
   try {
@@ -48,26 +43,16 @@ export const imap = (onEmail: onEmailType) => {
                 onEmail(from, subject, html)
               })
             } catch (error) {
-              bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-                Erro ao processar o IMAP. Reinicie o BOT
-                ${error}
-              `))
-              console.log(
-                chalk.red('Erro ao processar o e-mail')
-              )
+              console.error(chalk.red('Erro ao processar o e-mail'))
             }
           })
         })
       })
 
-      console.log(
-        chalk.green('Conexão IMAP aberta')
-      )
+      console.info(chalk.green('Conexão IMAP aberta'))
 
       setTimeout(() => {
-        console.log(
-          chalk.green('Conexão IMAP fechada. Abrindo outra...')
-        )
+        console.info(chalk.green('Conexão IMAP fechada. Abrindo outra...'))
         connection.end()
         imap(onEmail)
       }, env.IMAP_TIMEOUT)
@@ -75,10 +60,6 @@ export const imap = (onEmail: onEmailType) => {
       return connection.openBox('INBOX')
     })
   } catch (error) {
-    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-      Erro de conexão no IMAP. Reinicie o BOT
-      ${error}
-    `))
     console.error(error)
   }
 }

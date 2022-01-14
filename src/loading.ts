@@ -2,13 +2,11 @@ import path from 'path'
 import fs from 'fs'
 import dotenv from 'dotenv'
 import {cleanEnv, str, num} from 'envalid'
-import chalk from 'chalk'
-import dedent from 'dedent'
 import knex from 'knex'
 import knexfile from './knexfile'
 import {Telegraf} from 'telegraf'
 import nodemailer from 'nodemailer'
-import {env, knex as connection} from './index'
+import {env} from './index'
 
 export const loadEnv = () => {
   dotenv.config({path: path.resolve(process.cwd(), '.env')})
@@ -18,8 +16,14 @@ export const loadEnv = () => {
     EMAIL_USER: str(),
     EMAIL_PASSWORD: str(),
 
+    TEST_EMAIL_HOST: str(),
+    TEST_EMAIL_PORT: num(),
+    TEST_EMAIL_USER: str(),
+    TEST_EMAIL_PASSWORD: str(),
+
     G2G_HOST: str(),
     PA_HOST: str(),
+    P2PAH_HOST: str(),
 
     IMAP_TIMEOUT: num(),
 
@@ -31,7 +35,8 @@ export const loadEnv = () => {
 
     TELEGRAM_TOKEN: str(),
 
-    TELEGRAM_CHAT_ID: str()
+    TELEGRAM_CHAT_ID: str(),
+    TELEGRAM_TEST_CHAT_ID: str()
   })
 }
 
@@ -57,19 +62,5 @@ export const loadSMTP = () => {
       user: env.EMAIL_USER,
       pass: env.EMAIL_PASSWORD
     }
-  })
-}
-
-export const testConnection = () => {
-  connection.raw('SELECT version() as version').then((data) => {
-    const version = data[0][0].version
-    console.info(chalk.greenBright(dedent`
-      Banco de dados conectado! Versão: ${version}
-    `))
-  }).catch((error) => {
-    console.error(chalk.red(dedent`
-      Erro ao conectar com o banco de dados: ${error.sqlMessage || 'Banco offline'}
-    `))
-    process.exit(1)
   })
 }

@@ -8,103 +8,9 @@ import {
   updateProduct,
   deleteProduct
 } from './query'
-import {testG2G, testPA} from './test'
+import {testG2G, testPA, testP2PAH} from './test'
 
-interface IG2G {
-  orderID: string,
-  product: string,
-  price: string,
-  game: string,
-  type: string,
-  user: string,
-  userName: string
-}
-
-interface IPA {
-  orderID: string,
-  product: string,
-  game: string,
-  user: string,
-  userName: string
-}
-
-export const sendG2GSold = (data: IG2G) => {
-  if (data.user !== 'Desconhecido') {
-    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-    <b>VENDA NO G2G.COM</b>
-    PARA: <b>${data.userName}</b>
- 
-    Order ID: ${data.orderID}
-    Produto: ${data.product}
-    Valor: US$ ${data.price}
-    Jogo: ${data.game}
-    Tipo: ${data.type}
-
-    ${data.game === 'World of Warcraft' ? `
-    Essa é uma venda do WOW, não se esqueça de mandar a mensagem abaixo no grupo do <a href="https://chat.whatsapp.com/GtVIzbU3tMyFs8898XInQN">WhatsApp</a>
-
-    ID: ${data.orderID}
-    DATA: ${new Date().toLocaleDateString('pt-BR')}
-    PESSOA: COLOQUE SEU NOME AQUI
-    `: ''}
-    `), {
-      disable_web_page_preview: true,
-      parse_mode: 'HTML'
-    })
-  } else {
-    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-    <b>VENDA NO G2G.COM</b>
-    DONO DESCONHECIDO
- 
-    Order ID: ${data.orderID}
-    Produto: ${data.product}
-    Valor: US$ ${data.price}
-    Jogo: ${data.game}
-    Tipo: ${data.type}
-
-    ${data.game === 'World of Warcraft' ? `
-    Essa é uma venda do WOW, não se esqueça de mandar a mensagem abaixo no grupo do <a href="https://chat.whatsapp.com/GtVIzbU3tMyFs8898XInQN">WhatsApp</a>
-
-    ID: ${data.orderID}
-    DATA: ${new Date().toLocaleDateString('pt-BR')}
-    PESSOA: COLOQUE SEU NOME AQUI
-    `: ''}
-    `), {
-      disable_web_page_preview: true,
-      parse_mode: 'HTML'
-    })
-  }
-}
-
-export const sendPASold = (data: IPA) => {
-  if (data.user !== 'Desconhecido') {
-    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-    <b>VENDA NO PLAYERAUCTIONS.COM</b>
-    PARA: <b>${data.userName}</b>
-
-    Order ID: ${data.orderID}
-    Produto: ${data.product}
-    Jogo: ${data.game}
-    `), {
-      disable_web_page_preview: true,
-      parse_mode: 'HTML'
-    })
-  } else {
-    bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-    <b>VENDA NO PLAYERAUCTIONS.COM</b>
-    DONO DESCONHECIDO
-
-    Order ID: ${data.orderID}
-    Produto: ${data.product}
-    Jogo: ${data.game}
-    `), {
-      disable_web_page_preview: true,
-      parse_mode: 'HTML'
-    })
-  }
-}
-
-export const runCommands = () => {
+export const useTelegram = () => {
 
   bot.command('help', async (ctx) => {
     if (ctx.message.chat.type === 'private') {
@@ -228,10 +134,18 @@ export const runCommands = () => {
         ctx.reply('Enviado teste do PLAYERAUCTIONS.com')
         return testPA(args[1])
       }
+      if (args[0] === 'p2pah') {
+        if (typeof args[1] != 'string') {
+          return ctx.reply('Sintaxe incorreta')
+        }
+        ctx.reply('Enviado teste do P2PAH.COM')
+        return testP2PAH(args[1])
+      }
 
       return ctx.reply(dedent(`
       /test g2g [product]
       /test pa [product]
+      /test p2pah [product]
       `))
     }
   })

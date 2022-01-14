@@ -1,9 +1,9 @@
-import {env, smtp} from './index'
+import {env, smtp, isDev} from './index'
 
 export const testG2G = async (product: string) => {
   smtp.sendMail({
-    from: env.EMAIL_USER,
-    to: env.EMAIL_USER,
+    from: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    to: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
     subject: '[G2G] New Sell Order #0000000',
     html: `
     <div dir="ltr"><div class="gmail_quote">Dear Victor,<br><br>You have a new sell order. Please prepare
@@ -16,8 +16,8 @@ export const testG2G = async (product: string) => {
 
 export const testPA = async (product: string) => {
   smtp.sendMail({
-    from: env.EMAIL_USER,
-    to: env.EMAIL_USER,
+    from: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    to: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
     subject: 'You Have a New Order - Order ID 0000000',
     html: `
     <span>Dear Mateus Cerqueira Mota,</span>
@@ -67,6 +67,164 @@ export const testPA = async (product: string) => {
     5Rt5b8JiFCuoGnswvZoM7cIG0KkR89bFqeFOCG5jzL-2BAFLtvC-2FRGVKrgjXy1gyNoknHMonN=
     1RbTfIrgMHLam-2BydHhb9HkUc97jHN7eiOBpJK-2BgM">https://www.playerauctions.co=
     m</a> </p>
+    `
+  })
+}
+
+export const testP2PAH = async (product: string) => {
+  smtp.sendMail({
+    from: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    to: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    subject: '[P2PAH] New Sell Order #0000000000000000',
+    html: `
+    Dear ,
+
+    You have a new sell order. Please prepare the items for delivery as soon as=
+     possible or click "Chat Now" in your order details page to contact the buy=
+    er for delivery arrangement.
+
+    Order Summary:
+    --------------------------------------------------------------
+    Sell Order Number: 0000000000000000
+    Sell Order Date: Saturday, 28 November, 2020
+    E-mail Address: mateuscerqueira1@hotmail.com
+
+    Products
+    --------------------------------------------------------------
+    ${product}
+    --------------------------------------------------------------
+    Total: US$00.00
+
+    Status: New Order
+    Order Flow : [New Order] --> [Preparing] --> [Delivering] --> [Delivered] -=
+    -> [Completed] or [Canceled]
+
+    Read more about selling at P2PAH and payment request schedule and fee.
+
+    P2PAH.com Team
+
+    --_000_RIZP284MB1452ADFD4702D13040F7CDBC8A539RIZP284MB1452BRAP_
+    Content-Type: text/html; charset="iso-8859-1"
+    Content-Transfer-Encoding: quoted-printable
+
+    <html>
+    <head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+    1">
+    <style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+    ttom:0;} </style>
+    </head>
+    <body dir=3D"ltr">
+    <div style=3D"font-family: Calibri, Helvetica, sans-serif; font-size: 12pt;=
+     color: rgb(0, 0, 0);">
+    <span style=3D"color: rgb(0, 0, 0); background-image: initial; background-p=
+    osition: initial; background-size: initial; background-repeat: initial; bac=
+    kground-attachment: initial; background-origin: initial; background-clip: i=
+    nitial; font-family: Verdana; letter-spacing: 0px; font-size: 14px;">Dear
+    </span><span style=3D"color: rgb(0, 0, 0); background-image: initial; backg=
+    round-position: initial; background-size: initial; background-repeat: initi=
+    al; background-attachment: initial; background-origin: initial; background-=
+    clip: initial; font-family: Verdana; letter-spacing: 0px; font-size: 14px;"=
+    >,</span><br>
+    </div>
+    <div>
+    <div>
+    <p><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px; ba=
+    ckground:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">You have a new sell order. Please prepare th=
+    e items for delivery as soon as possible or click &quot;Chat Now&quot; in y=
+    our order details page to contact the buyer
+     for delivery arrangement.</span><span style=3D"font-family:Verdana; letter=
+    -spacing:0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Order Summary:</span><span style=3D"font-fam=
+    ily:Verdana; letter-spacing:0; font-size:14px; background:rgb(255,255,255)"=
+    ><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">--------------------------------------------=
+    ------------------</span><span style=3D"font-family:Verdana; letter-spacing=
+    :0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Sell Order Number: 2022011451100549</span><s=
+    pan style=3D"font-family:Verdana; letter-spacing:0; font-size:14px; backgro=
+    und:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Sell Order Date: Saturday, 28 November, 2020=
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">E-mail Address:&nbsp;mateuscerqueira1@hotmai=
+    l.com</span><span style=3D"font-family:Verdana; letter-spacing:0; font-size=
+    :14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Products</span><span style=3D"font-family:Ve=
+    rdana; letter-spacing:0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">--------------------------------------------=
+    ------------------</span><span style=3D"font-family:Verdana; letter-spacing=
+    :0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><strong><span style=3D"font-family:&#23435;&#20307;; color:rgb(255,0=
+    ,0); letter-spacing:0; font-size:14px; background:rgb(255,255,255)"><span s=
+    tyle=3D"font-family:&#23435;&#20307;">Aion Classic &gt; Siel-Elyos (M Kinah=
+    )</span></span></strong><span style=3D"font-family:Verdana; letter-spacing:=
+    0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">--------------------------------------------=
+    ------------------</span><span style=3D"font-family:Verdana; letter-spacing=
+    :0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Total:
+    </span><strong><span style=3D"font-family:&#23435;&#20307;; color:rgb(255,0=
+    ,0); letter-spacing:0; font-size:14px; background:rgb(255,255,255)"><span s=
+    tyle=3D"font-family:&#23435;&#20307;">US$34.77</span></span></strong><stron=
+    g><span style=3D"font-family:Verdana; color:rgb(255,0,0); letter-spacing:0;=
+     font-size:14px; background:rgb(255,255,255)"><br>
+    </span></strong><span style=3D"font-family:Verdana; letter-spacing:0; font-=
+    size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)">Status: New Order</span><span style=3D"font-=
+    family:Verdana; letter-spacing:0; font-size:14px; background:rgb(255,255,25=
+    5)"><br>
+    </span><strong><span style=3D"text-decoration:underline"><span style=3D"fon=
+    t-family:Verdana; color:rgb(30,84,148); letter-spacing:0; font-size:14px; b=
+    ackground:rgb(255,255,255)">Order Flow</span></span></strong><strong><span =
+    style=3D"font-family:Verdana; letter-spacing:0; font-size:14px; background:=
+    rgb(255,255,255)">&nbsp;:
+     [New Order] --&gt; [Preparing] --&gt; [Delivering] --&gt; [Delivered] --&g=
+    t; [Completed] or [Canceled]</span></strong><span style=3D"font-family:Verd=
+    ana; letter-spacing:0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"text-decoration:underline"><span style=3D"font-family=
+    :Verdana; color:rgb(30,84,148); letter-spacing:0; font-size:14px; backgroun=
+    d:rgb(255,255,255)">Read more</span></span><span style=3D"font-family:Verda=
+    na; letter-spacing:0; font-size:14px; background:rgb(255,255,255)">&nbsp;ab=
+    out
+     selling at </span><span style=3D"font-family:&#23435;&#20307;; letter-spac=
+    ing:0; font-size:14px; background:rgb(255,255,255)">P2PAH</span><span style=
+    =3D"font-family:Verdana; letter-spacing:0; font-size:14px; background:rgb(2=
+    55,255,255)">&nbsp;and&nbsp;</span><span style=3D"text-decoration:underline=
+    "><span style=3D"font-family:Verdana; color:rgb(30,84,148); letter-spacing:=
+    0; font-size:14px; background:rgb(255,255,255)">payment
+     request schedule and fee.</span></span><span style=3D"font-family:Verdana;=
+     letter-spacing:0; font-size:14px; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:Verdana; letter-spacing:0; font-size:14px=
+    ; background:rgb(255,255,255)"><br>
+    </span><span style=3D"font-family:&#23435;&#20307;; letter-spacing:0; font-=
+    size:14px; background:rgb(255,255,255)">P2PAH</span><span style=3D"font-fam=
+    ily:Verdana; letter-spacing:0; font-size:14px; background:rgb(255,255,255)"=
+    >.com Team</span></p>
+    </div>
+    </div>
+    </body>
+    </html>
     `
   })
 }
