@@ -9,8 +9,8 @@ obj.scripts = {
   'migrate:back': 'knex migrate:rollback --knexfile knexfile.js'
 }
 
-fs.writeFileSync(path.resolve(__dirname, '../_dist/package.json'), JSON.stringify(obj, null, 2))
+fs.writeFileSync(path.resolve(__dirname, '../_build/package.json'), JSON.stringify(obj, null, 2))
 fs.copyFileSync(
   path.resolve(__dirname, '../ecosystem.config.js'),
-  path.resolve(__dirname, '../_dist/ecosystem.config.js')
+  path.resolve(__dirname, '../_build/ecosystem.config.js')
 )

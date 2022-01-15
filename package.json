@@ -10,7 +10,7 @@
     "type": "git"
   },
   "scripts": {
-    "start": "node _dist/index.js",
+    "start": "node _build/index.js",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/index.ts",
     "dev:production": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/index.ts",
     "build": "tsc && ts-node src/build.ts",
