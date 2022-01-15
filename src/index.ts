@@ -30,7 +30,7 @@ knex.raw('SELECT version() as version').then((data) => {
   console.error(chalk.red(dedent`
     Erro ao conectar com o banco de dados: ${error.sqlMessage || 'Banco offline'}
   `))
-  process.exit(1)
+  process.exit()
 })
 
 bot.use(parserMiddleware)
