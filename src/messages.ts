@@ -14,6 +14,7 @@ interface IPA {
   orderID: string,
   product: string,
   game: string,
+  type: string,
   userName: string | undefined
 }
 
@@ -60,6 +61,7 @@ export const sendPASold = (data: IPA) => {
     Order ID: ${data.orderID}
     Produto: ${data.product}
     Jogo: ${data.game}
+    Tipo: ${data.type}
     `), {
     disable_web_page_preview: true,
     parse_mode: 'HTML'

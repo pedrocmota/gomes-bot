@@ -10,6 +10,7 @@ obj.scripts = {
 }
 
 fs.writeFileSync(path.resolve(__dirname, '../_build/package.json'), JSON.stringify(obj, null, 2))
+fs.mkdirSync(path.resolve(__dirname, '../_build/logs'))
 fs.copyFileSync(
   path.resolve(__dirname, '../ecosystem.config.js'),
   path.resolve(__dirname, '../_build/ecosystem.config.js')

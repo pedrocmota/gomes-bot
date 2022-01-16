@@ -14,33 +14,9 @@ export const processG2G = (html: string) => {
       if (i === 13) {
         var itemRaw = String(cheerioElement[0].prev['data'] as string)
         processedData.product = itemRaw
-
-        if (itemRaw.startsWith('New World')) {
-          processedData.game = 'New World'
-        }
-        if (itemRaw.startsWith('Aion Classic')) {
-          processedData.game = 'Aion Classic'
-        }
-        if (itemRaw.startsWith('FRESH LEVEL')) {
-          processedData.game = 'World of Warcraft Classic'
-          processedData.type = 'Venda de conta'
-        }
-        if (itemRaw.startsWith('World of Warcraft')) {
-          processedData.game = 'World of Warcraft'
-        }
-        if (itemRaw.startsWith('WOW')) {
-          processedData.game = 'World of Warcraft'
-        }
-
-        if (itemRaw.endsWith('(K Coins)')) {
-          processedData.type = 'Venda de gold'
-        }
-        if (itemRaw.endsWith('(Mil Kinah)')) {
-          processedData.type = 'Venda de Kinah'
-        }
-        if (itemRaw.endsWith('(Gold)')) {
-          processedData.type = 'Venda de gold'
-        }
+        const processedProduct = processProduct(itemRaw.trim().toLowerCase())
+        processedData.game = processedProduct.game
+        processedData.type = processedProduct.type
       }
       if (i === 15) {
         const valueRaw = cheerioElement[0].prev['data']
@@ -54,6 +30,7 @@ export const processG2G = (html: string) => {
     processedData.game = 'ERRO INTERNO'
     processedData.type = 'ERRO INTERNO'
   }
+
   return processedData
 }
 
@@ -61,7 +38,8 @@ export const processPA = (html: string) => {
   const $ = cheerio.load(html)
   const processedData = {
     product: 'Desconhecido',
-    game: 'Desconhecido'
+    game: 'Desconhecido',
+    type: 'Desconhecido'
   }
   try {
     $('br').each((i, element) => {
@@ -69,19 +47,18 @@ export const processPA = (html: string) => {
       if (i === 3) {
         var itemRaw = String(cheerioElement[0].prev['data'] as string).substring(12)
         processedData.product = itemRaw.trim()
-        if (itemRaw.startsWith('New World')) {
-          processedData.game = 'New World'
-        }
-        if (itemRaw.startsWith('Aion Classic')) {
-          processedData.game = 'Aion Classic'
-        }
+        const processedProduct = processProduct(itemRaw.trim().toLowerCase())
+        processedData.game = processedProduct.game
+        processedData.type = processedProduct.type
       }
     })
   } catch (error) {
     console.error(error)
     processedData.product = 'ERRO INTERNO'
     processedData.game = 'ERRO INTERNO'
+    processedData.type = 'ERRO INTERNO'
   }
+
   return processedData
 }
 
@@ -93,43 +70,16 @@ export const processP2PAH = (html: string) => {
     type: 'Desconhecido'
   }
   const $ = cheerio.load(html)
-  const ps = $('.gmail_quote > p > span')
+  const ps = $('p > span')
   try {
     ps.each((i, el) => {
       const itemRaw = $(el).prev().text()
       const valueRaw = $(el).next().text()
       if (i === 23) {
         processedData.product = itemRaw
-
-        if (itemRaw.startsWith('New World')) {
-          processedData.game = 'New World'
-        }
-        if (itemRaw.startsWith('Aion Classic')) {
-          processedData.game = 'Aion Classic'
-        }
-        if (itemRaw.startsWith('FRESH LEVEL')) {
-          processedData.game = 'World of Warcraft Classic'
-          processedData.type = 'Venda de conta'
-        }
-        if (itemRaw.startsWith('World of Warcraft')) {
-          processedData.game = 'World of Warcraft'
-        }
-        if (itemRaw.startsWith('WOW')) {
-          processedData.game = 'World of Warcraft'
-        }
-
-        if (itemRaw.endsWith('(K Coins)')) {
-          processedData.type = 'Venda de gold'
-        }
-        if (itemRaw.endsWith('(Mil Kinah)')) {
-          processedData.type = 'Venda de Kinah'
-        }
-        if (itemRaw.endsWith('(M Kinah)')) {
-          processedData.type = 'Venda de Kinah'
-        }
-        if (itemRaw.endsWith('(Gold)')) {
-          processedData.type = 'Venda de gold'
-        }
+        const processedProduct = processProduct(itemRaw.trim().toLowerCase())
+        processedData.game = processedProduct.game
+        processedData.type = processedProduct.type
       }
       if (i === 26) {
         const value = valueRaw.substring(valueRaw.indexOf('$') + 1)
@@ -145,4 +95,36 @@ export const processP2PAH = (html: string) => {
   }
 
   return processedData
+}
+
+const processProduct = (product: string) => {
+  const data = {
+    game: 'Desconhecido',
+    type: 'Desconhecido'
+  }
+
+  if (product.includes('new world')) {
+    data.game = 'New World'
+  }
+  if (product.includes('aion classic') || product.includes('aion')) {
+    data.game = 'Aion Classic'
+  }
+  if (product.startsWith('world of warcraft') || product.startsWith('wow')) {
+    data.game = 'World of Warcraft'
+  }
+  if (product.includes('level') || product.startsWith('mage')) {
+    data.game = 'World of Warcraft'
+  }
+
+  if (product.includes('level') || product.includes('account') || product.includes('gears')) {
+    data.type = 'Venda de conta'
+  }
+  if (product.endsWith('(k coins)') || product.endsWith('(gold)')) {
+    data.type = 'Venda de gold'
+  }
+  if (product.endsWith('(mil kinah)') || product.endsWith('(M Kinah)')) {
+    data.type = 'Venda de Kinah'
+  }
+
+  return data
 }

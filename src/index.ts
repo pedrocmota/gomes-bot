@@ -7,6 +7,7 @@ import {getProducts} from './query'
 import {useTelegram} from './telegram'
 import {sendG2GSold, sendPASold, sendP2PHASold} from './messages'
 import {parserMiddleware} from './middleware'
+import {registerHTML} from './logs'
 
 export const env = loadEnv()
 export const version = loadVersion()
@@ -30,7 +31,7 @@ knex.raw('SELECT version() as version').then((data) => {
   console.error(chalk.red(dedent`
     Erro ao conectar com o banco de dados: ${error.sqlMessage || 'Banco offline'}
   `))
-  process.exit()
+  process.exit(1)
 })
 
 bot.use(parserMiddleware)
@@ -38,6 +39,9 @@ useTelegram()
 bot.launch()
 
 imap(async (from, subject, html) => {
+  registerHTML(html)
+  console.info(`E-mail recebido de ${from} `)
+
   //G2G
   if (subject.startsWith('[G2G] New Sell Order')) {
     const orderID = subject.substring(subject.indexOf('#') + 1)
@@ -68,6 +72,7 @@ imap(async (from, subject, html) => {
       orderID: orderID,
       product: processedData.product,
       game: processedData.game,
+      type: processedData.type,
       userName: salvadorenho?.username
     })
   }
