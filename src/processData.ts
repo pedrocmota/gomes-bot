@@ -12,13 +12,15 @@ export const processG2G = (html: string) => {
     $('br').each((i, element) => {
       const cheerioElement = $(element)
       if (i === 13) {
-        var itemRaw = String(cheerioElement[0].prev['data'] as string)
+        //@ts-ignore
+        var itemRaw = String(cheerioElement[0].prev!['data'])
         processedData.product = itemRaw
         const processedProduct = processProduct(itemRaw.trim().toLowerCase())
         processedData.game = processedProduct.game
         processedData.type = processedProduct.type
       }
       if (i === 15) {
+        //@ts-ignore
         const valueRaw = cheerioElement[0].prev['data']
         processedData.price = valueRaw.substring(valueRaw.indexOf('$') + 1)
       }
@@ -45,6 +47,7 @@ export const processPA = (html: string) => {
     $('br').each((i, element) => {
       const cheerioElement = $(element)
       if (i === 3) {
+        //@ts-ignore
         var itemRaw = String(cheerioElement[0].prev['data'] as string).substring(12)
         processedData.product = itemRaw.trim()
         const processedProduct = processProduct(itemRaw.trim().toLowerCase())

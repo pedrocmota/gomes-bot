@@ -1,18 +1,18 @@
-import {Context} from 'telegraf'
-
-export const parserMiddleware = (ctx: Context, next: () => void) => {
-  if (ctx?.message['text']) {
-    const message = ctx.message['text']
-    if (typeof message === 'string') {
-      try {
-        const array = parser(message)
-        const command = array[0] || ''
-        const args = array.slice(1)
-        ctx.state.command = {
-          command: command,
-          args: args
-        }
-      } catch { }
+export const parserMiddleware = (ctx: any, next: () => void) => {
+  if (ctx.message) {
+    if (ctx?.message['text']) {
+      const message = ctx.message['text']
+      if (typeof message === 'string') {
+        try {
+          const array = parser(message)
+          const command = array[0] || ''
+          const args = array.slice(1)
+          ctx.state.command = {
+            command: command,
+            args: args
+          }
+        } catch { }
+      }
     }
   }
   next()
@@ -23,7 +23,7 @@ const parser = (full: string) => {
   var str = ''
   var inaspass = false
   for (let index in full as any) {
-    var letter = full[index]
+    var letter = full[index as any]
     if (letter == '"') {
       if (inaspass) {
         inaspass = false

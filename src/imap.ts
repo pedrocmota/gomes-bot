@@ -36,11 +36,11 @@ export const imap = (onEmail: onEmailType) => {
               const id = message.attributes.uid
               const idHeader = 'Imap-Id: ' + id + '\r\n'
               const all = message.parts.find((el) => el.which == '')
-              simpleParser(idHeader + all.body, (err, mail) => {
-                const from = mail.from.value[0].address
+              simpleParser(idHeader + all?.body, (err, mail) => {
+                const from = mail!.from!.value[0].address
                 const subject = mail.subject
                 const html = String(mail.html)
-                onEmail(from, subject, html)
+                onEmail(from!, subject!, html)
               })
             } catch (error) {
               console.error(chalk.red('Erro ao processar o e-mail'))

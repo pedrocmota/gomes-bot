@@ -1,13 +1,8 @@
 import {env, version, bot} from './index'
 import dedent from 'dedent'
-import {
-  getProducts,
-  getProduct,
-  getProductByLabel,
-  insertProduct,
-  updateProduct,
-  deleteProduct
-} from './query'
+import {getTempOrder, deleteTempOrder} from './queries/tempOrders'
+import {getUser} from './queries/users'
+import {generateMessage} from './messages'
 import {testG2G, testPA, testP2PAH} from './test'
 
 export const useTelegram = () => {
@@ -17,7 +12,6 @@ export const useTelegram = () => {
       ctx.reply(dedent(`
       /version - Mostra a versão atual
       /username - Mostra o seu username
-      /product - Gerenciador de produto. Consule /product help
       `))
     }
   })
@@ -26,93 +20,6 @@ export const useTelegram = () => {
     if (ctx.message.chat.type === 'private') {
       ctx.reply(dedent(`
       Gomes Bot v${version}
-      `))
-    }
-  })
-
-  bot.command('username', async (ctx) => {
-    if (ctx.message.chat.type === 'private') {
-      const username = ctx.message.from.username
-      if (typeof username === 'string' && username?.length > 0) {
-        ctx.reply(`Seu username é @${username}`)
-      } else {
-        ctx.reply('Você não tem username')
-      }
-    }
-  })
-
-  bot.command('product', async (ctx) => {
-    if (ctx.message.chat.type === 'private') {
-      const args = ctx.state.command.args
-      if (args[0] === 'list') {
-        const products = await getProducts()
-        var text = ''
-        products.forEach((el) => {
-          text += '\n' + dedent(`
-          ${el.id})
-  
-          ${el.product}
-          ${el.user} ${el.username}
-  
-          #############################
-          `)
-        })
-        return ctx.reply(text)
-      }
-
-      if (args[0] === 'add') {
-        if (typeof args[1] != 'string' || typeof args[2] != 'string' || typeof args[3] != 'string') {
-          return ctx.reply('Sintaxe incorreta')
-        }
-        if ((await getProductByLabel(args[1])) !== undefined) {
-          return ctx.reply('Esse produto já existe')
-        }
-        if (!args[3].startsWith('@')) {
-          return ctx.reply('É necessário digitar um username válido')
-        }
-        return insertProduct(args[1], args[2], args[3]).then(() => {
-          ctx.reply('Produto adicionado com sucesso')
-        }).catch(() => {
-          ctx.reply('Erro interno ao adicionar o produto')
-        })
-      }
-
-      if (args[0] === 'edit') {
-        if (typeof args[1] != 'string' || typeof args[2] != 'string' || typeof args[3] != 'string') {
-          return ctx.reply('Sintaxe incorreta')
-        }
-        if ((await getProduct(args[1])) === undefined) {
-          return ctx.reply('ID inexistente')
-        }
-        if (!args[4].startsWith('@')) {
-          return ctx.reply('É necessário digitar um username válido')
-        }
-        return updateProduct(args[1], args[2], args[3], args[4]).then(() => {
-          ctx.reply('Produto editado com sucesso')
-        }).catch(() => {
-          ctx.reply('Erro interno ao editar o produto')
-        })
-      }
-
-      if (args[0] === 'delete') {
-        if (typeof args[1] != 'string') {
-          return ctx.reply('Sintaxe incorreta')
-        }
-        if ((await getProduct(args[1])) === undefined) {
-          return ctx.reply('ID inexistente')
-        }
-        return deleteProduct(args[1]).then(() => {
-          ctx.reply('Produto deletado com sucesso')
-        }).catch(() => {
-          ctx.reply('Erro interno ao deletar o produto')
-        })
-      }
-
-      return ctx.reply(dedent(`
-      /product list
-      /product add [produto] [nome usuário] [username]
-      /product edit [id] [produto] [nome usuário] [username]
-      /product delete [id]
       `))
     }
   })
@@ -150,19 +57,36 @@ export const useTelegram = () => {
     }
   })
 
-  bot.command('/say', async (ctx) => {
-    if (ctx.message.chat.type === 'private') {
-      const args = ctx.state.command.args
-      if (!ctx.message.from.username) {
-        return 'Você não tem username'
+  bot.on('callback_query', async (ctx) => {
+    const chatID = ctx.callbackQuery.message!.chat.id.toString()
+    const msgID = ctx.update.callback_query.message!.message_id
+    if (chatID === env.TELEGRAM_CHAT_ID || chatID === env.TELEGRAM_TEST_CHAT_ID) {
+      const order = await getTempOrder(msgID)
+      if (order) {
+        const actionUsername = `@${ctx.callbackQuery.from.username}`
+        const actionUser = await getUser(actionUsername)
+        const isAdmin = actionUser?.admin === 1
+        const taggedUsers = JSON.parse(order.users as any) as string[]
+        if (taggedUsers.includes(actionUsername) || isAdmin) {
+          await deleteTempOrder(msgID)
+          await bot.telegram.editMessageReplyMarkup(chatID, order.id, undefined, {
+            inline_keyboard: []
+          })
+          await bot.telegram.editMessageText(chatID, order.id, undefined, generateMessage({
+            orderID: order.orderID,
+            product: order.product,
+            price: order.price || '00.00',
+            game: order.game,
+            type: order.type,
+            users: [(ctx.update.callback_query as any).data],
+            status: 'Ativo'
+          }, 'G2G'), {
+            disable_web_page_preview: true,
+            parse_mode: 'HTML'
+          })
+        }
       }
-      if (typeof args[0] === 'string') {
-        bot.telegram.sendMessage(env.TELEGRAM_CHAT_ID, dedent(`
-        MENSAGEM DO MANO @${ctx.message.from.username}
-
-        ${args[0]}
-        `))
-      }
+      return
     }
   })
 

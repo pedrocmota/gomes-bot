@@ -3,10 +3,10 @@ import dedent from 'dedent'
 import {loadEnv, loadDB, loadVersion, loadBot, loadSMTP} from './loading'
 import {imap} from './imap'
 import {processG2G, processPA, processP2PAH} from './processData'
-import {getProducts} from './query'
+import {getProduct} from './queries/product'
 import {useTelegram} from './telegram'
-import {sendG2GSold, sendPASold, sendP2PHASold} from './messages'
 import {parserMiddleware} from './middleware'
+import {sendOrder} from './messages'
 import {registerHTML} from './logs'
 
 export const env = loadEnv()
@@ -47,17 +47,18 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processG2G(html)
 
-    const products = await getProducts()
-    const salvadorenho = products.find((el) => el.product === processedData.product)
+    const product = await getProduct(processedData.product)
+    const users = product ? JSON.parse(product.users) : ['Desconhecido']
 
-    sendG2GSold({
+    sendOrder({
       orderID: orderID,
       product: processedData.product,
       price: processedData.price,
       game: processedData.game,
       type: processedData.type,
-      userName: salvadorenho?.username
-    })
+      users: users,
+      status: 'Ativo'
+    }, 'G2G')
   }
 
   //PA
@@ -65,16 +66,18 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(32)
     const processedData = processPA(html)
 
-    const products = await getProducts()
-    const salvadorenho = products.find((el) => el.product === processedData.product)
+    const product = await getProduct(processedData.product)
+    const users = product ? JSON.parse(product.users) : ['Desconhecido']
 
-    sendPASold({
+    sendOrder({
       orderID: orderID,
       product: processedData.product,
+      price: '00.00',
       game: processedData.game,
       type: processedData.type,
-      userName: salvadorenho?.username
-    })
+      users: users,
+      status: 'Ativo'
+    }, 'PA')
   }
 
   //P2PAH
@@ -82,16 +85,17 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processP2PAH(html)
 
-    const products = await getProducts()
-    const salvadorenho = products.find((el) => el.product === processedData.product)
+    const product = await getProduct(processedData.product)
+    const users = product ? JSON.parse(product.users) : ['Desconhecido']
 
-    sendP2PHASold({
+    sendOrder({
       orderID: orderID,
       product: processedData.product,
       price: processedData.price,
       game: processedData.game,
       type: processedData.type,
-      userName: salvadorenho?.username
-    })
+      users: users,
+      status: 'Ativo'
+    }, 'P2PAH')
   }
 })

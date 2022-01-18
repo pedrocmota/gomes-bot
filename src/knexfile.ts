@@ -1,9 +1,11 @@
 import {Knex} from 'knex'
-import path from 'path'
 import dotenv from 'dotenv'
+import path from 'path'
 
 const knexConfig = () => {
-  dotenv.config({path: path.resolve(process.cwd(), '.env')})
+  dotenv.config({
+    path: path.resolve(process.cwd(), '.env')
+  })
   const config: Knex.Config = {
     client: 'mysql',
     connection: {
@@ -15,6 +17,9 @@ const knexConfig = () => {
     },
     migrations: {
       directory: `${__dirname}/migrations`
+    },
+    seeds: {
+      directory: `${__dirname}/seeds`
     },
     useNullAsDefault: true
   }
