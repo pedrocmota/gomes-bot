@@ -131,5 +131,8 @@ const processProduct = (product: string) => {
   if (product.endsWith('(mil kinah)') || product.endsWith('(M kinah)')) {
     data.type = 'Venda de Kinah'
   }
+  if (product.endsWith('gametime')) {
+    data.type = 'Venda de gametime'
+  }
   return data
 }
