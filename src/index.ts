@@ -47,8 +47,8 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processG2G(html)
 
-    const product = await getProduct(processedData.product)
-    const users = product ? JSON.parse(product.users) : ['Desconhecido']
+    const product = await getProduct(processedData.product, 'G2G')
+    const users = product ? JSON.parse(product.users) : []
 
     sendOrder({
       orderID: orderID,
@@ -66,8 +66,8 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(32)
     const processedData = processPA(html)
 
-    const product = await getProduct(processedData.product)
-    const users = product ? JSON.parse(product.users) : ['Desconhecido']
+    const product = await getProduct(processedData.product, 'PA')
+    const users = product ? JSON.parse(product.users) : []
 
     sendOrder({
       orderID: orderID,
@@ -85,8 +85,8 @@ imap(async (from, subject, html) => {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processP2PAH(html)
 
-    const product = await getProduct(processedData.product)
-    const users = product ? JSON.parse(product.users) : ['Desconhecido']
+    const product = await getProduct(processedData.product, 'P2PAH')
+    const users = product ? JSON.parse(product.users) : []
 
     sendOrder({
       orderID: orderID,

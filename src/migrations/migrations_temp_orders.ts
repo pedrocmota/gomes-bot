@@ -1,4 +1,16 @@
 import {Knex} from 'knex'
+import {sites} from '../messages'
+
+export interface ITempTable {
+  id: number,
+  orderID: string,
+  product: string,
+  price?: string,
+  game: string,
+  type: string,
+  users: string[],
+  site: sites
+}
 
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('temp_orders', (table) => {

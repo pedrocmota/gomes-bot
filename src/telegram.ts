@@ -67,7 +67,7 @@ export const useTelegram = () => {
         const actionUser = await getUser(actionUsername)
         const isAdmin = actionUser?.admin === 1
         const taggedUsers = JSON.parse(order.users as any) as string[]
-        if (taggedUsers.includes(actionUsername) || isAdmin) {
+        if (taggedUsers.includes(actionUsername) || isAdmin || taggedUsers.length === 0) {
           await deleteTempOrder(msgID)
           await bot.telegram.editMessageReplyMarkup(chatID, order.id, undefined, {
             inline_keyboard: []
@@ -80,7 +80,7 @@ export const useTelegram = () => {
             type: order.type,
             users: [(ctx.update.callback_query as any).data],
             status: 'Ativo'
-          }, 'G2G'), {
+          }, order.site), {
             disable_web_page_preview: true,
             parse_mode: 'HTML'
           })

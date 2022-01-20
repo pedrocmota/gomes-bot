@@ -119,15 +119,17 @@ const processProduct = (product: string) => {
     data.game = 'World of Warcraft'
   }
 
-  if (product.includes('level') || product.includes('account') || product.includes('gears')) {
+  if (product.includes('level')
+    || product.includes('account')
+    || product.includes('gears')
+    || product.includes('gear')) {
     data.type = 'Venda de conta'
   }
   if (product.endsWith('(k coins)') || product.endsWith('(gold)')) {
     data.type = 'Venda de gold'
   }
-  if (product.endsWith('(mil kinah)') || product.endsWith('(M Kinah)')) {
+  if (product.endsWith('(mil kinah)') || product.endsWith('(M kinah)')) {
     data.type = 'Venda de Kinah'
   }
-
   return data
 }

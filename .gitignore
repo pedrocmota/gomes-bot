@@ -3,3 +3,6 @@ logs/*
 !logs/.gitkeep
 .env
 _build
+_dist
+yarn-debug.log
+yarn-error.log

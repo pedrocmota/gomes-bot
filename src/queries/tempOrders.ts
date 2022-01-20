@@ -1,16 +1,5 @@
 import {knex} from '../index'
-import {sites} from '../messages'
-
-interface ITempTable {
-  id: number,
-  orderID: string,
-  product: string,
-  price?: string,
-  game: string,
-  type: string,
-  users: string[],
-  site: sites
-}
+import {ITempTable} from '../migrations/migrations_temp_orders'
 
 export const insertTempOrder = async (data: ITempTable) => {
   return knex<ITempTable>('temp_orders').insert({

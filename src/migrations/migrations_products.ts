@@ -1,5 +1,12 @@
 import {Knex} from 'knex'
 
+export interface IProductTable {
+  id: number,
+  product: string,
+  site: string,
+  users: string
+}
+
 export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('products', (table) => {
     table.increments('id').notNullable().primary()

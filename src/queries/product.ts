@@ -1,16 +1,15 @@
 import {knex} from '../index'
 import {sites} from '../messages'
+import {IProductTable} from '../migrations/migrations_products'
 
-interface IProductTable {
-  id: number,
-  product: string,
-  site: string,
-  users: string
-}
-
-export const getProduct = async (product: string) => {
+export const getProduct = async (product: string, site?: sites) => {
   return (
-    knex<IProductTable>('products').select<IProductTable[]>().where({product: product}).first()
+    knex<IProductTable>('products').select<IProductTable[]>().where({
+      product: product,
+      ...((site) && {
+        site: site
+      })
+    }).first()
   )
 }
 

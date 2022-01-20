@@ -1,3 +1,6 @@
-Bot do truefarmers
+# Gomes Bot
 
-Licença: MIT
+Bot do Telegram
+
+## Licença
+[MIT](https://choosealicense.com/licenses/mit/)
