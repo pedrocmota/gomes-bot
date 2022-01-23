@@ -128,7 +128,7 @@ const processProduct = (product: string) => {
   if (product.endsWith('(k coins)') || product.endsWith('(gold)')) {
     data.type = 'Venda de gold'
   }
-  if (product.endsWith('(mil kinah)') || product.endsWith('(M kinah)')) {
+  if (product.endsWith('(mil kinah)') || product.endsWith('(m kinah)')) {
     data.type = 'Venda de Kinah'
   }
   if (product.endsWith('gametime')) {

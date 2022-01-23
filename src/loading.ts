@@ -6,7 +6,7 @@ import knex from 'knex'
 import knexfile from './knexfile'
 import {Telegraf} from 'telegraf'
 import nodemailer from 'nodemailer'
-import {env} from './index'
+import {env, isDev} from './index'
 
 export const loadEnv = () => {
   dotenv.config({path: path.resolve(process.cwd(), '.env')})
@@ -34,6 +34,7 @@ export const loadEnv = () => {
     DB_DATABASE: str(),
 
     TELEGRAM_TOKEN: str(),
+    TELEGRAM_TEST_TOKEN: str(),
 
     TELEGRAM_CHAT_ID: str(),
     TELEGRAM_TEST_CHAT_ID: str()
@@ -50,7 +51,7 @@ export const loadDB = () => {
 }
 
 export const loadBot = () => {
-  return new Telegraf(env.TELEGRAM_TOKEN)
+  return new Telegraf(!isDev ? env.TELEGRAM_TOKEN : env.TELEGRAM_TEST_TOKEN)
 }
 
 export const loadSMTP = () => {

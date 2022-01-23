@@ -9,12 +9,12 @@ import {parserMiddleware} from './middleware'
 import {sendOrder} from './messages'
 import {registerHTML} from './logs'
 
+export const isDev = process.env.npm_lifecycle_event === 'dev'
 export const env = loadEnv()
 export const version = loadVersion()
 export const knex = loadDB()
 export const bot = loadBot()
 export const smtp = loadSMTP()
-export const isDev = process.env.npm_lifecycle_event === 'dev'
 
 console.info(chalk.green(`Gomes bot v${version}`))
 
