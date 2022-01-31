@@ -1,6 +1,6 @@
 import dedent from 'dedent'
 import {env, bot, isDev} from './index'
-import {insertTempOrder} from './queries/tempOrders'
+import {insertOrder} from './queries/orders'
 import {getAllUsers} from './queries/users'
 
 interface IOrder {
@@ -31,8 +31,30 @@ export const sendOrder = async (data: IOrder, site: sites) => {
   })
 
   if (keyboard.length > 0 && data.users.length !== 1) {
-    await insertTempOrder({id: message.message_id, ...data, site: site, orderID: data.orderID})
+    await insertOrder({id: message.message_id, ...data, site: site, orderID: data.orderID})
   }
+}
+
+export const changeOrderMessageStatus = async (id: number, data: IOrder, status: status, site: sites) => {
+  const chatID = !isDev ? env.TELEGRAM_CHAT_ID : env.TELEGRAM_TEST_CHAT_ID
+  const keyboard = await generateKeyboard(data.users) as unknown as any[]
+  await bot.telegram.editMessageText(chatID, id, undefined, generateMessage({
+    orderID: data.orderID,
+    product: data.product,
+    price: data.price || '00.00',
+    game: data.game,
+    type: data.type,
+    users: data.users,
+    status: status
+  }, site), {
+    disable_web_page_preview: true,
+    parse_mode: 'HTML',
+    ...((keyboard.length > 0 && data.users.length !== 1) && {
+      reply_markup: {
+        inline_keyboard: keyboard
+      }
+    })
+  })
 }
 
 export const generateMessage = (data: IOrder, site: sites) => {
@@ -58,7 +80,14 @@ export const G2GMessage = (data: IOrder) => {
   Valor: US$ ${data.price}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Status: ${data.status}
+  Status: <b>${data.status}</b>
+
+  ${data.status === 'Cancelado' ? dedent(`
+  <b>■■■ VENDA CANCELADA! ■■■</b>
+  `) : ''}
+  ${data.status === 'Solicitado para cancelar' ? dedent(`
+  <b>■■■ CANCELAMENTO SOLICITADO! ■■■</b>
+  `) : ''}
   `)
 }
 
@@ -71,7 +100,14 @@ export const PAMessage = (data: IOrder) => {
   Produto: ${data.product}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Status: ${data.status}
+  Status: <b>${data.status}</b>
+
+  ${data.status === 'Cancelado' ? dedent(`
+  <b>■■■ VENDA CANCELADA! ■■■</b>
+  `) : ''}
+  ${data.status === 'Solicitado para cancelar' ? dedent(`
+  <b>■■■ CANCELAMENTO SOLICITADO! ■■■</b>
+  `) : ''}
   `)
 }
 
@@ -85,7 +121,14 @@ export const P2PAHMessage = (data: IOrder) => {
   Valor: US$ ${data.price}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Status: ${data.status}
+  Status: <b>${data.status}</b>
+
+  ${data.status === 'Cancelado' ? dedent(`
+  <b>■■■ VENDA CANCELADA! ■■■</b>
+  `) : ''}
+  ${data.status === 'Solicitado para cancelar' ? dedent(`
+  <b>■■■ CANCELAMENTO SOLICITADO! ■■■</b>
+  `) : ''}
   `)
 }
 

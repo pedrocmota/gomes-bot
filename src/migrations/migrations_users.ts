@@ -8,11 +8,15 @@ export interface IUserTable {
 }
 
 export async function up(knex: Knex): Promise<void> {
-  return knex.schema.createTable('users', (table) => {
-    table.increments('id').notNullable().primary()
-    table.string('username').notNullable()
-    table.string('user').notNullable()
-    table.integer('admin').notNullable().defaultTo(0)
+  return knex.schema.hasTable('users').then((exists) => {
+    if (!exists) {
+      return knex.schema.createTable('users', (table) => {
+        table.increments('id').notNullable().primary()
+        table.string('username').notNullable()
+        table.string('user').notNullable()
+        table.integer('admin').notNullable().defaultTo(0)
+      })
+    }
   })
 }
 

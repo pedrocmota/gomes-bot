@@ -93,3 +93,44 @@ export const testP2PAH = async (product: string) => {
     `
   })
 }
+
+export const testG2GCancel = (orderID: string) => {
+  smtp.sendMail({
+    from: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    to: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    subject: `Your sell order ${orderID} has been cancelled.`,
+    html: `
+    Dear Victor,<br/><br /> Your sell order ${orderID} has been cancelled automatically as requested by the buyer, since you have not viewed the delivery details.<br /> If you have any query, please contact our customer support.
+    `
+  })
+}
+
+export const testG2GConfirmation = (orderID: string) => {
+  smtp.sendMail({
+    from: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    to: !isDev ? env.EMAIL_USER : env.TEST_EMAIL_USER,
+    subject: `[G2G] Your service fee statement for sold order #${orderID}`,
+    html: `
+    Thank you.
+    <br />
+    <br />
+        Dear Victor Melo
+    <br />
+    <br />
+        Greetings! We are pleased to enclose the service fee statement of your recent sold order for your viewing; and it is for record purpose only.
+    <br />
+    <br />
+        You may also retrieve the same information by accessing your G2G account <a href='https://www.g2g.com/order/sellOrder/order?oid=${orderID}' target='_blank'>Sold Order History</a>. 
+    <br />
+    <br />
+        For any assistance, please email us at support@g2g.com and we will get back to you as soon as possible. 
+    <br />
+    <br />
+        Regards, 
+    <br />
+        GAMER2GAMER GLOBAL PTE LTD
+     <br />
+     <br />
+    `
+  })
+}

@@ -1,9 +1,15 @@
 import {env, version, bot} from './index'
 import dedent from 'dedent'
-import {getTempOrder, deleteTempOrder} from './queries/tempOrders'
+import {getOrder, setOrderUsers} from './queries/orders'
 import {getUser} from './queries/users'
 import {generateMessage} from './messages'
-import {testG2G, testPA, testP2PAH} from './test'
+import {
+  testG2G,
+  testPA,
+  testP2PAH,
+  testG2GCancel,
+  testG2GConfirmation
+} from './test'
 
 export const useTelegram = () => {
 
@@ -49,10 +55,30 @@ export const useTelegram = () => {
         return testP2PAH(args[1])
       }
 
+      if (args[0] === 'g2g-cancel') {
+        if (typeof args[1] != 'string') {
+          return ctx.reply('Sintaxe incorreta')
+        }
+        ctx.reply('Enviado teste de cancelamento do G2G.com')
+        return testG2GCancel(args[1])
+      }
+
+      if (args[0] === 'g2g-confirmation') {
+        if (typeof args[1] != 'string') {
+          return ctx.reply('Sintaxe incorreta')
+        }
+        ctx.reply('Enviado teste de confirmação do G2G.com')
+        return testG2GConfirmation(args[1])
+      }
+
       return ctx.reply(dedent(`
       /test g2g [product]
       /test pa [product]
       /test p2pah [product]
+
+      /test g2g-cancel [orderID]
+
+      /test g2g-confirmation [orderID]
       `))
     }
   })
@@ -61,14 +87,14 @@ export const useTelegram = () => {
     const chatID = ctx.callbackQuery.message!.chat.id.toString()
     const msgID = ctx.update.callback_query.message!.message_id
     if (chatID === env.TELEGRAM_CHAT_ID || chatID === env.TELEGRAM_TEST_CHAT_ID) {
-      const order = await getTempOrder(msgID)
+      const order = await getOrder(msgID)
       if (order) {
         const actionUsername = `@${ctx.callbackQuery.from.username}`
         const actionUser = await getUser(actionUsername)
         const isAdmin = actionUser?.admin === 1
         const taggedUsers = JSON.parse(order.users as any) as string[]
         if (taggedUsers.includes(actionUsername) || isAdmin || taggedUsers.length === 0) {
-          await deleteTempOrder(msgID)
+          await setOrderUsers(msgID, [(ctx.update.callback_query as any).data])
           await bot.telegram.editMessageReplyMarkup(chatID, order.id, undefined, {
             inline_keyboard: []
           })
@@ -79,7 +105,7 @@ export const useTelegram = () => {
             game: order.game,
             type: order.type,
             users: [(ctx.update.callback_query as any).data],
-            status: 'Ativo'
+            status: order.status
           }, order.site), {
             disable_web_page_preview: true,
             parse_mode: 'HTML'

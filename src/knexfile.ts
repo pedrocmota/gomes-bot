@@ -3,8 +3,9 @@ import dotenv from 'dotenv'
 import path from 'path'
 
 const knexConfig = () => {
+  const isDev = process.env.npm_lifecycle_event === 'dev'
   dotenv.config({
-    path: path.resolve(process.cwd(), '.env')
+    path: path.resolve(process.cwd(), path.resolve(process.cwd(), !isDev ? '../.env' : '.env'))
   })
   const config: Knex.Config = {
     client: 'mysql',

@@ -4,9 +4,10 @@ import {loadEnv, loadDB, loadVersion, loadBot, loadSMTP} from './loading'
 import {imap} from './imap'
 import {processG2G, processPA, processP2PAH} from './processData'
 import {getProduct} from './queries/product'
+import {getOrderByOrderID, setOrderStatus} from './queries/orders'
 import {useTelegram} from './telegram'
 import {parserMiddleware} from './middleware'
-import {sendOrder} from './messages'
+import {sendOrder, changeOrderMessageStatus} from './messages'
 import {registerHTML} from './logs'
 
 export const isDev = process.env.npm_lifecycle_event === 'dev'
@@ -38,11 +39,34 @@ bot.use(parserMiddleware)
 useTelegram()
 bot.launch()
 
+// const abc = async () => {
+//   bot.telegram.sendMessage('-1001574445594', dedent(`
+//   <b>VENDA NO <a href="https://www.g2g.com/order/sellOrder/order?oid=123">G2G.COM</a></b>
+//   PARA: <b>Desconhecido</b>
+
+//   Order ID: 5387508
+//   Produto: Produto de teste 3
+//   Valor: US$ 59.91
+//   Jogo: Desconhecido
+//   Tipo: Desconhecido
+//   Status: Cancelado
+
+//   ${0 == 0 ? dedent(`
+//   <b>■■■ CANCELAMENTO SOLICITADO! ■■■</b>  
+//   `) : ''}
+//   `), {
+//     disable_web_page_preview: true,
+//     parse_mode: 'HTML'
+//   })
+// }
+
+// abc()
+
 imap(async (from, subject, html) => {
   registerHTML(html)
   console.info(`E-mail recebido de ${from} `)
 
-  //G2G
+  //G2G ORDER
   if (subject.startsWith('[G2G] New Sell Order')) {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processG2G(html)
@@ -61,7 +85,7 @@ imap(async (from, subject, html) => {
     }, 'G2G')
   }
 
-  //PA
+  //PA ORDER
   if (subject.includes('You Have a New Order')) {
     const orderID = subject.substring(32)
     const processedData = processPA(html)
@@ -80,7 +104,7 @@ imap(async (from, subject, html) => {
     }, 'PA')
   }
 
-  //P2PAH
+  //P2PAH ORDER
   if (subject.startsWith('[P2PAH] New Sell Order')) {
     const orderID = subject.substring(subject.indexOf('#') + 1)
     const processedData = processP2PAH(html)
@@ -97,5 +121,39 @@ imap(async (from, subject, html) => {
       users: users,
       status: 'Ativo'
     }, 'P2PAH')
+  }
+
+  //G2G CANCEL
+  if (subject.startsWith('Your sell order') && subject.endsWith('has been cancelled.')) {
+    const orderID = subject.substring(16).substring(0, 7)
+    const order = await getOrderByOrderID(orderID)
+    if (order) {
+      order.users = JSON.parse(order.users as any)
+      if (order.status === 'Ativo') {
+        await changeOrderMessageStatus(order.id, order, 'Cancelado', 'G2G')
+        await setOrderStatus(order.id, 'Cancelado')
+      } else {
+        console.error(`${orderID} não está ativa`)
+      }
+    } else {
+      console.error(`${orderID} não existe`)
+    }
+  }
+
+  //G2G CONFIRMED
+  if (subject.startsWith('[G2G] Your service fee statement for sold order')) {
+    const orderID = subject.substring(subject.indexOf('#') + 1)
+    const order = await getOrderByOrderID(orderID)
+    if (order) {
+      order.users = JSON.parse(order.users as any)
+      if (order.status === 'Ativo') {
+        await changeOrderMessageStatus(order.id, order, 'Confirmado', 'G2G')
+        await setOrderStatus(order.id, 'Confirmado')
+      } else {
+        console.error(`${orderID} não está ativa`)
+      }
+    } else {
+      console.error(`${orderID} não existe`)
+    }
   }
 })
