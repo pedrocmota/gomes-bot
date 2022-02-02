@@ -2,8 +2,6 @@ import path from 'path'
 import fs from 'fs'
 import dotenv from 'dotenv'
 import {cleanEnv, str, num} from 'envalid'
-import knex from 'knex'
-import knexfile from './knexfile'
 import {Telegraf} from 'telegraf'
 import nodemailer from 'nodemailer'
 import {env, isDev} from './index'
@@ -44,10 +42,6 @@ export const loadEnv = () => {
 export const loadVersion = () => {
   const obj = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8'))
   return obj.version || 'DESCONHECIDO'
-}
-
-export const loadDB = () => {
-  return knex(knexfile)
 }
 
 export const loadBot = () => {

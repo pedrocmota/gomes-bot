@@ -1,4 +1,4 @@
-import {knex} from '../index'
+import knex from '../knexfile'
 import {IOrderTable} from '../migrations/migrations_orders'
 import {status} from '../messages'
 

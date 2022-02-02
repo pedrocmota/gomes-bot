@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "target": "ES2017",
     "baseUrl": ".",
     "module": "commonjs",
@@ -9,5 +10,9 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "strict": true
-  }
+  },
+  "exclude": [
+    "/tests",
+    "/logs"
+  ]
 }

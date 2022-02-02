@@ -1,11 +1,16 @@
-import {Knex} from 'knex'
+import knex, {Knex} from 'knex'
 import dotenv from 'dotenv'
 import path from 'path'
+import fs from 'fs'
+import chalk from 'chalk'
 
 const knexConfig = () => {
-  const isDev = process.env.npm_lifecycle_event === 'dev'
+  const envPath = path.resolve(process.cwd(), path.resolve(process.cwd(), '.env'))
+  if (!fs.existsSync(envPath)) {
+    console.info(chalk.red(`Env não encontrado em ${envPath}`))
+  }
   dotenv.config({
-    path: path.resolve(process.cwd(), path.resolve(process.cwd(), !isDev ? '../.env' : '.env'))
+    path: path.resolve(process.cwd(), path.resolve(process.cwd(), '.env'))
   })
   const config: Knex.Config = {
     client: 'mysql',
@@ -27,4 +32,4 @@ const knexConfig = () => {
   return config
 }
 
-export default knexConfig()
+export default knex(knexConfig())

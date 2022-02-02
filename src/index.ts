@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import dedent from 'dedent'
-import {loadEnv, loadDB, loadVersion, loadBot, loadSMTP} from './loading'
+import {loadEnv, loadVersion, loadBot, loadSMTP} from './loading'
+import knex from './knexfile'
 import {imap} from './imap'
 import {processG2G, processPA, processP2PAH} from './processData'
 import {getProduct} from './queries/product'
@@ -13,7 +14,6 @@ import {registerHTML} from './logs'
 export const isDev = process.env.npm_lifecycle_event === 'dev'
 export const env = loadEnv()
 export const version = loadVersion()
-export const knex = loadDB()
 export const bot = loadBot()
 export const smtp = loadSMTP()
 
@@ -38,29 +38,6 @@ knex.raw('SELECT version() as version').then((data) => {
 bot.use(parserMiddleware)
 useTelegram()
 bot.launch()
-
-// const abc = async () => {
-//   bot.telegram.sendMessage('-1001574445594', dedent(`
-//   <b>VENDA NO <a href="https://www.g2g.com/order/sellOrder/order?oid=123">G2G.COM</a></b>
-//   PARA: <b>Desconhecido</b>
-
-//   Order ID: 5387508
-//   Produto: Produto de teste 3
-//   Valor: US$ 59.91
-//   Jogo: Desconhecido
-//   Tipo: Desconhecido
-//   Status: Cancelado
-
-//   ${0 == 0 ? dedent(`
-//   <b>■■■ CANCELAMENTO SOLICITADO! ■■■</b>  
-//   `) : ''}
-//   `), {
-//     disable_web_page_preview: true,
-//     parse_mode: 'HTML'
-//   })
-// }
-
-// abc()
 
 imap(async (from, subject, html) => {
   registerHTML(html)
