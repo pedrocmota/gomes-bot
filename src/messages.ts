@@ -100,7 +100,6 @@ export const PAMessage = (data: IOrder) => {
   Produto: ${data.product}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Status: <b>${data.status}</b>
 
   ${data.status === 'Cancelado' ? dedent(`
   <b>■■■ VENDA CANCELADA! ■■■</b>
@@ -121,7 +120,6 @@ export const P2PAHMessage = (data: IOrder) => {
   Valor: US$ ${data.price}
   Jogo: ${data.game}
   Tipo: ${data.type}
-  Status: <b>${data.status}</b>
 
   ${data.status === 'Cancelado' ? dedent(`
   <b>■■■ VENDA CANCELADA! ■■■</b>
