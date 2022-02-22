@@ -1,8 +1,9 @@
-import {env, version, bot} from './index'
+import {env, version, bot, isDev} from './index'
 import dedent from 'dedent'
 import {getOrder, setOrderUsers} from './queries/orders'
 import {getUser} from './queries/users'
-import {generateMessage} from './messages'
+import {getOrderByOrderID} from './queries/orders'
+import {generateMessage, generateKeyboard} from './messages'
 import {
   testG2G,
   testPA,
@@ -18,6 +19,7 @@ export const useTelegram = () => {
       ctx.reply(dedent(`
       /version - Mostra a versão atual
       /username - Mostra o seu username
+      /reset [id] - Reseta o keyboard da order
       `))
     }
   })
@@ -80,6 +82,43 @@ export const useTelegram = () => {
 
       /test g2g-confirmation [orderID]
       `))
+    }
+  })
+
+  bot.command('order', async (ctx) => {
+    if (ctx.message.chat.type === 'private') {
+      const args = ctx.state.command.args
+      if (args[0] === 'reset') {
+        if (typeof args[1] === 'string') {
+          const order = await getOrderByOrderID(args[1])
+          if (order) {
+            const chatID = !isDev ? env.TELEGRAM_CHAT_ID : env.TELEGRAM_TEST_CHAT_ID
+            const keyboard = await generateKeyboard([]) as unknown as any[]
+            await setOrderUsers(order.id, [])
+            await bot.telegram.editMessageText(chatID, order.id, undefined, generateMessage({
+              orderID: order.orderID,
+              product: order.product,
+              price: order.price || '00.00',
+              game: order.game,
+              type: order.type,
+              users: [],
+              status: order.status
+            }, order.site), {
+              disable_web_page_preview: true,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: keyboard
+              }
+            })
+            return ctx.reply('Operação concluída')
+          } else {
+            return ctx.reply('Essa order não existe')
+          }
+        } else {
+          return ctx.reply('ID order inválido')
+        }
+      }
+      return ctx.reply('Operação desconhecida')
     }
   })
 

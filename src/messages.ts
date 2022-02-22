@@ -165,6 +165,12 @@ export const generateKeyboard = async (usernames: string[]) => {
         callback_data: user.username
       } as never)
     })
+    processed[index + 1] = [
+      {
+        text: 'Diversas pessoas',
+        callback_data: 'Diversas pessoas'
+      }
+    ] as any
     return processed
   }
 }

@@ -118,6 +118,9 @@ const processProduct = (product: string) => {
   if (product.includes('level') || product.startsWith('mage')) {
     data.game = 'World of Warcraft'
   }
+  if (product.includes('lost ark') || product.startsWith('lost ark')) {
+    data.game = 'Lost Ark'
+  }
 
   if (product.includes('level')
     || product.includes('account')
