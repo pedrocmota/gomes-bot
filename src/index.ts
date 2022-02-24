@@ -102,7 +102,7 @@ imap(async (from, subject, html) => {
 
   //G2G CANCEL
   if (subject.startsWith('Your sell order') && subject.endsWith('has been cancelled.')) {
-    const orderID = subject.substring(16).substring(0, 7)
+    const orderID = subject.substring(16).substring(0, 8)
     const order = await getOrderByOrderID(orderID)
     if (order) {
       order.users = JSON.parse(order.users as any)
