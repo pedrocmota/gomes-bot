@@ -2,8 +2,8 @@ import {env, version, bot, isDev} from './index'
 import dedent from 'dedent'
 import {getOrder, setOrderUsers} from './queries/orders'
 import {getUser} from './queries/users'
-import {getOrderByOrderID} from './queries/orders'
-import {generateMessage, generateKeyboard} from './messages'
+import {getOrderByOrderID, setOrderStatus} from './queries/orders'
+import {generateMessage, generateKeyboard, status} from './messages'
 import {
   testG2G,
   testPA,
@@ -116,6 +116,52 @@ export const useTelegram = () => {
           }
         } else {
           return ctx.reply('ID order inválido')
+        }
+      }
+      if (args[0] === 'status') {
+        if (
+          args[1] as status === 'Ativo' ||
+          args[1] as status === 'Cancelado' ||
+          args[1] as status === 'Confirmado' ||
+          args[1] as status === 'Solicitado para cancelar'
+        ) {
+          const status = args[1] as status
+          const order = await getOrderByOrderID(args[2])
+          if (order) {
+            const chatID = !isDev ? env.TELEGRAM_CHAT_ID : env.TELEGRAM_TEST_CHAT_ID
+            const keyboard = await generateKeyboard(JSON.parse(order.users as any)) as unknown as any[]
+            try {
+              await setOrderStatus(order.id, status)
+              await bot.telegram.editMessageText(chatID, order.id, undefined, generateMessage({
+                orderID: order.orderID,
+                product: order.product,
+                price: order.price || '00.00',
+                game: order.game,
+                type: order.type,
+                users: [],
+                status: status
+              }, order.site), {
+                disable_web_page_preview: true,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: keyboard
+                }
+              })
+            } catch { }
+            return ctx.reply('Operação concluída')
+          } else {
+            return ctx.reply('Essa order não existe')
+          }
+        } else {
+          return ctx.reply(dedent(`
+          Estado desconhecido.
+          
+          Estados válidos:
+          Ativo
+          Cancelado
+          Confirmado
+          Solicitado para cancelar
+          `))
         }
       }
       return ctx.reply('Operação desconhecida')
